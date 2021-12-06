@@ -18,10 +18,11 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE email=#{email}")
     User selectByEmail(String email);
 
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("INSERT INTO user (username, password, salt, email, type, status, activation_code, header_url, create_time)" +
-            "VALUES (#{user.username},#{user.password},#{user.salt},#{user.email},#{user.type},#{user.status}," +
-            "#{user.activationCode},#{user.headerUrl},#{user.createTime})")
-    int insertUser(@Param("user") User user);
+           "VALUES (#{username},#{password},#{salt},#{email},#{type},#{status}," +
+          "#{activationCode},#{headerUrl},#{createTime})")
+    int insertUser(User user);
 
     @Update("UPDATE user SET status=#{status} WHERE id=#{id}")
     int updateStatus(int id, int status);
