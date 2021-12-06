@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -80,8 +81,9 @@ public class UserService implements CommunityConstant {
         user.setStatus(0);
         user.setActivationCode(CommunityUtil.generateUUID());
         user.setHeaderUrl(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
+        user.setCreateTime(new Date());
         userMapper.insertUser(user);
-        user = userMapper.selectByName(user.getUsername());
+        //user = userMapper.selectByName(user.getUsername());
 
         //激活邮件
         Context context = new Context();
