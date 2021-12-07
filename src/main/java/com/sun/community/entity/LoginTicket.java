@@ -6,7 +6,6 @@ import lombok.ToString;
 import java.util.Date;
 
 @Data
-@ToString
 public class LoginTicket {
     private int id;
     private int userId;

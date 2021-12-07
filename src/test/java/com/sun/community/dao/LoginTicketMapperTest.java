@@ -33,7 +33,7 @@ public class LoginTicketMapperTest {
 
     @Test
     public void selectByTicket() {
-        LoginTicket ticket=loginTicketMapper.selectByTicket("Ticket");
+        LoginTicket ticket=loginTicketMapper.selectByTicket("c3a3170f38a84f3eb78b167c3afaf5b6");
         System.out.println(ticket);
     }
 

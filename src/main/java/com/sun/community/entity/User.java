@@ -6,7 +6,6 @@ import lombok.ToString;
 import java.util.Date;
 
 @Data
-@ToString
 public class User {
 
     private int id;
