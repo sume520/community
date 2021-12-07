@@ -7,16 +7,10 @@ import java.util.Date;
 
 @Data
 @ToString
-public class DiscussPost {
-
+public class LoginTicket {
     private int id;
     private int userId;
-    private String title;
-    private String content;
-    private int type;
+    private String ticket;
     private int status;
-    private Date createTime;
-    private int commentCount;
-    private double score;
-
+    private Date expired;
 }

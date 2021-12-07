@@ -16,3 +16,4 @@ public interface CommunityConstant {
      */
     int ACTIVATION_FAILURE=2;
 }
+
