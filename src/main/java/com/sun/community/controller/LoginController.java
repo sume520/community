@@ -9,12 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
@@ -123,9 +125,10 @@ public class LoginController implements CommunityConstant {
     }
 
     @GetMapping("/logout")
-    public String logout(@CookieValue("ticket") String ticket,HttpServletResponse response){
+    public String logout(@CookieValue("ticket") String ticket, HttpServletResponse response) {
         userService.logout(ticket);
-        Cookie cookie=new Cookie("ticket","");
+        //删除浏览器的ticket项
+        Cookie cookie = new Cookie("ticket", "");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         return "redirect:/login";
