@@ -30,7 +30,6 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //从cookie中获取凭证
         String ticket = CookieUtil.getValue(request, "ticket");
-        logger.debug("preHandle");
         if (ticket != null) {
             LoginTicket loginTicket = userService.findLoginTicket(ticket);
             //检查凭证是否有效

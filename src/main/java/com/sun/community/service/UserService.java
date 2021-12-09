@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class UserService implements CommunityConstant {
@@ -138,6 +135,15 @@ public class UserService implements CommunityConstant {
         if (user.getStatus() == 0) {
             map.put("usernameMsg", "该账号未激活！");
             return map;
+        }
+
+        //已在别处登录则设置已登录的ticket状态为1
+        List<LoginTicket> loginTickets = loginTicketMapper.selectByUserId(user.getId());
+        if (loginTickets != null && !loginTickets.isEmpty()) {
+            logger.debug("账号已在别处登录");
+            for (LoginTicket ticket : loginTickets) {
+                logout(ticket.getTicket());
+            }
         }
 
         //验证密码

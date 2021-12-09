@@ -1,5 +1,6 @@
 package com.sun.community.controller;
 
+import com.sun.community.annotation.LoginRequired;
 import com.sun.community.entity.User;
 import com.sun.community.service.UserService;
 import com.sun.community.util.CommunityUtil;
@@ -41,11 +42,13 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;
 
+    @LoginRequired
     @RequestMapping(path = "setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting";
     }
 
+    @LoginRequired
     @PostMapping("/upload")
     public String uploadHeader(MultipartFile headerImage, Model model) {
         if (headerImage == null) {

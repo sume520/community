@@ -105,3 +105,17 @@ java.lang.NullPointerException: Cannot invoke "com.sun.community.entity.User.get
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:831)
 2021-12-09 10:34:02,409 ERROR [http-nio-9090-exec-6] c.s.c.c.LoginController [LoginController.java:96] 响应验证码失败：java.io.IOException: 你的主机中的软件中止了一个已建立的连接。
+2021-12-09 11:21:28,465 ERROR [restartedMain] o.s.b.d.LoggingFailureAnalysisReporter [LoggingFailureAnalysisReporter.java:40] 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 9090 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 9090 or configure this application to listen on another port.
+
