@@ -59,8 +59,11 @@ public class UserController {
             model.addAttribute("error", "文件的格式不正确！");
             return "/site/setting";
         }
-        if(suffix!=".png"||suffix!=".jpg"||suffix!=".gif"||suffix!="jpeg"){
-            model.addAttribute("error","不支持该文件格式，请选择格式为jpg、png、jpeg或gif的图像");
+
+        logger.debug("上传的图片格式为：" + suffix);
+        //筛选图片格式
+        if (!suffix.equals(".png") && !suffix.equals(".jpg") && !suffix.equals(".gif") && !suffix.equals("jpeg")) {
+            model.addAttribute("error", "不支持该文件格式，请选择格式为jpg、png、jpeg或gif的图像");
             return "/site/setting";
         }
 
@@ -105,24 +108,24 @@ public class UserController {
     }
 
     @PostMapping("/password")
-    public String updatePassword(Model model, String oldPassword,String newPassword,String rePassword) {
+    public String updatePassword(Model model, String oldPassword, String newPassword, String rePassword) {
         User user = hostHolder.getUser();
-        oldPassword=CommunityUtil.md5(oldPassword+user.getSalt());
-        if(!oldPassword.equals(user.getPassword())){
-            model.addAttribute("oldPasswordMsg","原密码错误！");
+        oldPassword = CommunityUtil.md5(oldPassword + user.getSalt());
+        if (!oldPassword.equals(user.getPassword())) {
+            model.addAttribute("oldPasswordMsg", "原密码错误！");
             return "/site/setting";
         }
 
-        if(newPassword==null){
-            model.addAttribute("newPasswordMsg","新密码不能为空！");
+        if (newPassword == null) {
+            model.addAttribute("newPasswordMsg", "新密码不能为空！");
             return "/site/setting";
         }
-        if(newPassword.length()<8){
-            model.addAttribute("newPasswordMsg","新密码不能小于8位！");
+        if (newPassword.length() < 8) {
+            model.addAttribute("newPasswordMsg", "新密码不能小于8位！");
             return "/site/setting";
         }
-        if(!newPassword.equals(rePassword)){
-            model.addAttribute("rePasswordMsg","两次输入的密码不一致！");
+        if (!newPassword.equals(rePassword)) {
+            model.addAttribute("rePasswordMsg", "两次输入的密码不一致！");
             return "/site/setting";
         }
 
