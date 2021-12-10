@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Date;
+
 @Controller
 @RequestMapping("/comment")
 public class CommentController {
@@ -27,8 +29,8 @@ public class CommentController {
     public String addComment(@PathVariable("discussPost") int discussId, Comment comment){
         comment.setUserId(hostHolder.getUser().getId());
         comment.setStatus(0);
+        comment.setCreateTime(new Date());
         commentService.addComment(comment);
-
         return "redirect:/discuss/detail/"+discussId;
     }
 }

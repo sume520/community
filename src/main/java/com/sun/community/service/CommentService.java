@@ -1,9 +1,12 @@
 package com.sun.community.service;
 
+import com.sun.community.controller.DiscussPostController;
 import com.sun.community.dao.CommentMapper;
 import com.sun.community.entity.Comment;
 import com.sun.community.util.CommunityConstant;
 import com.sun.community.util.SensitiveFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -15,6 +18,8 @@ import java.util.List;
 
 @Service
 public class CommentService implements CommunityConstant {
+    private final Logger logger = LoggerFactory.getLogger(DiscussPostController.class);
+
     @Autowired
     private CommentMapper commentMapper;
 
@@ -32,22 +37,27 @@ public class CommentService implements CommunityConstant {
         return commentMapper.selectCountByEntity(entityType, entityId);
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED,propagation = Propagation.REQUIRED)
-    public int addComment(Comment comment){
-        if(comment==null){
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    public int addComment(Comment comment) {
+        if (comment == null) {
             throw new IllegalArgumentException("参数不能为空");
         }
 
         //添加评论
         comment.setContent(HtmlUtils.htmlEscape(comment.getContent()));
         comment.setContent(sensitiveFilter.filter(comment.getContent()));
-        int rows= commentMapper.insertComment(comment);
+        int rows = commentMapper.insertComment(comment);
 
         //更新帖子评论数量
-        if(comment.getEntityType()==ENTITY_TYPE_POST){
-            int count=commentMapper.selectCountByEntity(comment.getEntityType(),comment.getEntityType());
-            discussPostService.updateCommentCount(comment.getEntityType(),count);
+        if (comment.getEntityType() == ENTITY_TYPE_POST) {
+            int count = commentMapper.selectCountByEntity(comment.getEntityType(), comment.getEntityId());
+            logger.debug("count: "+count);
+            discussPostService.updateCommentCount(comment.getEntityId(), count);
         }
+
+        logger.debug("entity id " + comment.getEntityId() + " entity type" + comment.getEntityType() + " comment count " +
+                commentMapper.selectCountByEntity(comment.getEntityType(), comment.getEntityId()));
+
 
         return rows;
     }

@@ -11,6 +11,8 @@ import com.sun.community.service.UserService;
 import com.sun.community.util.CommunityConstant;
 import com.sun.community.util.CommunityUtil;
 import com.sun.community.util.HostHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,8 @@ import java.util.*;
 @Controller
 @RequestMapping("/discuss")
 public class DiscussPostController implements CommunityConstant {
+
+    private final Logger logger= LoggerFactory.getLogger(DiscussPostController.class);
 
     @Autowired
     private DiscussPostService discussPostService;
@@ -66,6 +70,7 @@ public class DiscussPostController implements CommunityConstant {
         page.setPath("/discuss/detail/" + discussPostId);
         page.setRows(post.getCommentCount());
 
+        //评论
         List<Comment> commentList = commentService.findCommentsByEntity(
                 ENTITY_TYPE_POST, post.getId(), page.getOffset(), page.getLimit());
 
@@ -87,21 +92,26 @@ public class DiscussPostController implements CommunityConstant {
                     for (Comment reply : replyList) {
                         Map<String, Object> replyVo = new HashMap<>();
                         replyVo.put("reply", reply);
-                        replyVo.put("user", userService.findUserById(comment.getUserId()));
+                        replyVo.put("user", userService.findUserById(reply.getUserId()));
                         //回复目标
                         User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
+                        if(target!=null){
+                            logger.debug("reply id: "+reply.getId()+" targe id: "+target.getId()+" user id: "+comment.getUserId());
+                        }
                         replyVo.put("target", target);
                         replyVoList.add(replyVo);
                     }
                 }
                 commentVo.put("replys", replyVoList);
 
-                //回复数量
+                //回复评论的数量
                 int replyCount = commentService.findCommentCount(ENTITY_TYPE_COMMENT, comment.getId());
                 commentVo.put("replyCount", replyCount);
 
                 commentVoList.add(commentVo);
             }
+
+            logger.debug("comment count "+commentList.size()+" commentCount "+post.getCommentCount());
 
             model.addAttribute("comments",commentVoList);
         }

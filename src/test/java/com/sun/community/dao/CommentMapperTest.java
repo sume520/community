@@ -16,7 +16,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class)
-public class CommentMapperTest {
+public class
+CommentMapperTest {
 
     @Autowired
     private CommentMapper commentMapper;
