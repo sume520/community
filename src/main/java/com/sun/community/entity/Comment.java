@@ -1,4 +1,4 @@
-package com.sun.community.dao;
+package com.sun.community.entity;
 
 import lombok.Data;
 

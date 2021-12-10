@@ -24,7 +24,7 @@ public class SensitiveFilter {
     private static final String REPLACEMENT = "***";
 
     //根节点
-    private TrieNode rootNode = new TrieNode();
+    private final TrieNode rootNode = new TrieNode();
 
     @PostConstruct
     public void init() {
@@ -128,7 +128,7 @@ public class SensitiveFilter {
     }
 
     @Data
-    private class TrieNode {
+    private static class TrieNode {
         //关键词借宿标识
         private boolean isKeywordEnd = false;
 
