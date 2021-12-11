@@ -131,6 +131,6 @@ public class LoginController implements CommunityConstant {
         Cookie cookie = new Cookie("ticket", "");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
-        return "redirect:/login";
+        return "redirect:/index";
     }
 }

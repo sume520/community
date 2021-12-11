@@ -26,10 +26,12 @@ public class ExceptionAdvice {
         String xRequestedWith = request.getHeader("x-requested-with");
 
         if ("XMLHttpRequest".equals(xRequestedWith)) {//判断是否异步请求
+            logger.error("异步请求出错");
             response.setContentType("application/plain;charset=utf-8");
             PrintWriter writer = response.getWriter();
             writer.write(CommunityUtil.getJSONString(1, "服务器异常！"));
         } else {
+            logger.error("非异步请求出错");
             response.sendRedirect(request.getContextPath() + "/error");
         }
     }
