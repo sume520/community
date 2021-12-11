@@ -29,7 +29,6 @@ public class ExceptionAdvice {
             response.setContentType("application/plain;charset=utf-8");
             PrintWriter writer = response.getWriter();
             writer.write(CommunityUtil.getJSONString(1, "服务器异常！"));
-            logger.error("异步请求错误");
         } else {
             response.sendRedirect(request.getContextPath() + "/error");
         }
