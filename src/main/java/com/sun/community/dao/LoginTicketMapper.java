@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
+@Deprecated
 public interface LoginTicketMapper {
 
     @Insert({
