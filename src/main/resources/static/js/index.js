@@ -3,6 +3,7 @@ $(function () {
 });
 
 function publish() {
+    //#后面跟的时id
     $("#publishModal").modal("hide");
 
     //获取标题和内容
