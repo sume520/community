@@ -19,9 +19,13 @@ public interface CommentMapper {
     @Select("select count(id) from comment where status=0 and entity_type=#{entityType} and entity_id=#{entityId}")
     int selectCountByEntity(int entityType, int entityId);
 
-    @Options(useGeneratedKeys = true,keyProperty = "id")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert({"insert comment (user_id,entity_type,entity_id,target_id,content,status,create_time) ",
             "values (#{userId},#{entityType},#{entityId},#{targetId},#{content},#{status},#{createTime})"})
     int insertComment(Comment comment);
+
+    @Select("select id,user_id,entity_type,entity_id,target_id,content,status,create_time " +
+            "from comment where id=#{id}")
+    Comment selectCommentById(int id);
 
 }
