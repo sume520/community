@@ -151,7 +151,7 @@ public class UserService implements CommunityConstant {
 
         //已在别处登录则设置已登录的ticket状态为1
         // List<LoginTicket> loginTickets = loginTicketMapper.selectByUserId(user.getId());
-        Set<String> keys = redisTemplate.keys("ticket:" + "");
+        Set<String> keys = redisTemplate.keys("ticket:" + "*");
         List<LoginTicket> loginTickets = redisTemplate.opsForValue().multiGet(keys);
         Map<String, LoginTicket> ticketMap = new HashMap<>();
         if (loginTickets != null) {

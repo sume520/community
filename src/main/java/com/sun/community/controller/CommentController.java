@@ -45,6 +45,7 @@ public class CommentController implements CommunityConstant {
                 .setUserId(hostHolder.getUser().getId())
                 .setEntityId(comment.getEntityId())
                 .setEntityType(comment.getEntityType())
+                .setEntityUserId(comment.getTargetId())
                 .setData("postId", discussId); //记录评论所在的帖子
 
         if (comment.getEntityType() == ENTITY_TYPE_POST) {

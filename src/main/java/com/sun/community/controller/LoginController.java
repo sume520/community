@@ -119,10 +119,14 @@ public class LoginController implements CommunityConstant {
     public String login(String username, String password, String code,
                         boolean rememberMe, Model model, HttpSession session,
                         HttpServletResponse response,
-                        @CookieValue("kaptchaOwner") String kaptchaOwner) {
+                        @CookieValue(value = "kaptchaOwner", required = false) String kaptchaOwner) {
         //检查验证码
         //String kaptcha = (String) session.getAttribute("kaptcha");
         String kaptcha = null;
+        if (kaptchaOwner == null) {
+            model.addAttribute("codeMsg", "验证码已过期！请重新输入验证码！");
+            return "/site/login";
+        }
         if (StringUtils.isNotBlank(kaptchaOwner)) {
             String redisKey = RedisKeyUtil.getKaptchaKey(kaptchaOwner);
             kaptcha = (String) redisTemplate.opsForValue().get(redisKey);

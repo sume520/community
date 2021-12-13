@@ -1,6 +1,7 @@
 package com.sun.community.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sun.community.annotation.LoginRequired;
 import com.sun.community.entity.Message;
 import com.sun.community.entity.Page;
 import com.sun.community.entity.User;
@@ -33,6 +34,7 @@ public class MessageController implements CommunityConstant {
     private UserService userService;
 
     //私信列表
+    @LoginRequired
     @GetMapping("/letter/list")
     public String getLetterList(Model model, Page page) {
         User user = hostHolder.getUser();
@@ -67,6 +69,7 @@ public class MessageController implements CommunityConstant {
         return "/site/letter";
     }
 
+    @LoginRequired
     @GetMapping("/letter/detail/{conversationId}")
     public String getLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
         //分页信息
@@ -123,6 +126,7 @@ public class MessageController implements CommunityConstant {
         return ids;
     }
 
+    @LoginRequired
     @PostMapping("/letter/send")
     @ResponseBody
     public String sendLetter(String toName, String content) {
@@ -146,6 +150,7 @@ public class MessageController implements CommunityConstant {
         return CommunityUtil.getJSONString(0);
     }
 
+    @LoginRequired
     @GetMapping("/notice/list")
     public String getNoticeList(Model model) {
         User user = hostHolder.getUser();
@@ -228,6 +233,7 @@ public class MessageController implements CommunityConstant {
         return "/site/notice";
     }
 
+    @LoginRequired
     @GetMapping("/notice/detail/{topic}")
     public String getNoticeDetail(@PathVariable("topic") String topic, Page page, Model model) {
         User user = hostHolder.getUser();

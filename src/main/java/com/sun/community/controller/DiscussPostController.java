@@ -56,8 +56,6 @@ public class DiscussPostController implements CommunityConstant {
         post.setCreateTime(new Date());
         discussPostService.addDiscussPost(post);
 
-        //TODO 报错处理
-
         return CommunityUtil.getJSONString(0, "发布成功！");
     }
 
