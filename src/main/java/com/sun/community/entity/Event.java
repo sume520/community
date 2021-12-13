@@ -6,10 +6,10 @@ import java.util.Map;
 public class Event {
 
     private String topic;
-    private int userId;
+    private int userId; //执行点赞、关注、评论的人
     private int entityType;
     private int entityId;
-    private int entityUserId;
+    private int entityUserId; //实体所属id，如帖子的发表人，评论被回复的人，被关注的人
     private Map<String, Object> data = new HashMap<>();
 
 

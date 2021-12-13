@@ -152,8 +152,9 @@ public class MessageController implements CommunityConstant {
 
         //查询评论类通知
         Message message = messageService.findLatestNotice(user.getId(), TOPIC_COMMENT);
-        Map<String, Object> messageVo = new HashMap<>();
+
         if (message != null) {
+            Map<String, Object> messageVo = new HashMap<>();
             messageVo.put("message", message);
 
             String content = HtmlUtils.htmlUnescape(message.getContent());
@@ -169,13 +170,14 @@ public class MessageController implements CommunityConstant {
 
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_COMMENT);
             messageVo.put("unread", unread);
+            model.addAttribute("commentNotice", messageVo);
         }
-        model.addAttribute("commentNotice", messageVo);
+
 
         //查询点赞类通知
         message = messageService.findLatestNotice(user.getId(), TOPIC_LIKE);
-        messageVo = new HashMap<>();
         if (message != null) {
+            Map<String, Object> messageVo = new HashMap<>();
             messageVo.put("message", message);
 
             String content = HtmlUtils.htmlUnescape(message.getContent());
@@ -191,13 +193,14 @@ public class MessageController implements CommunityConstant {
 
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_LIKE);
             messageVo.put("unread", unread);
+            model.addAttribute("likeNotice", messageVo);
         }
-        model.addAttribute("likeNotice", messageVo);
+
 
         //查询关注类通知
         message = messageService.findLatestNotice(user.getId(), TOPIC_FOLLOW);
-        messageVo = new HashMap<>();
         if (message != null) {
+            Map<String, Object> messageVo = new HashMap<>();
             messageVo.put("message", message);
 
             String content = HtmlUtils.htmlUnescape(message.getContent());
@@ -212,8 +215,9 @@ public class MessageController implements CommunityConstant {
 
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_FOLLOW);
             messageVo.put("unread", unread);
+            model.addAttribute("followNotice", messageVo);
         }
-        model.addAttribute("followNotice", messageVo);
+
 
         //查询未读消息数量
         int letterunreadCount = messageService.findLetterUnreadCount(user.getId(), null);
@@ -222,5 +226,44 @@ public class MessageController implements CommunityConstant {
         model.addAttribute("noticeUnreadCount", noticeUnreadCount);
 
         return "/site/notice";
+    }
+
+    @GetMapping("/notice/detail/{topic}")
+    public String getNoticeDetail(@PathVariable("topic") String topic, Page page, Model model) {
+        User user = hostHolder.getUser();
+
+        page.setLimit(5);
+        page.setPath("/notice/detail/" + topic);
+        page.setRows(messageService.findNoticeCount(user.getId(), topic));
+
+        List<Message> noticeList = messageService.findNotices(user.getId(), topic, page.getOffset(), page.getLimit());
+        List<Map<String,Object>> noticeVoList=new ArrayList<>();
+        if(noticeList!=null){
+            for(Message notice:noticeList){
+                Map<String,Object> map=new HashMap<>();
+                //通知
+                map.put("notice",notice);
+                //内容
+                String content=HtmlUtils.htmlUnescape(notice.getContent());
+                Map<String,Object> data=JSONObject.parseObject(content,HashMap.class);
+                map.put("user",userService.findUserById((Integer) data.get("userId")));
+                map.put("entityType",data.get("entityType"));
+                map.put("entityId",data.get("entityId"));
+                map.put("postId",data.get("postId"));
+                //通知作者
+                map.put("fromUser",userService.findUserById(notice.getFromId()));
+
+                noticeVoList.add(map);
+            }
+        }
+        model.addAttribute("notices",noticeVoList);
+
+        //设置已读
+        List<Integer> ids=getLetterIds(noticeList);
+        if(!ids.isEmpty()){
+            messageService.readMessage(ids);
+        }
+
+        return "/site/notice-detail";
     }
 }

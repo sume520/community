@@ -151,15 +151,16 @@ public class UserService implements CommunityConstant {
 
         //已在别处登录则设置已登录的ticket状态为1
         // List<LoginTicket> loginTickets = loginTicketMapper.selectByUserId(user.getId());
-        Set<String> keys = redisTemplate.keys("ticket:*");
+        Set<String> keys = redisTemplate.keys("ticket:" + "");
         List<LoginTicket> loginTickets = redisTemplate.opsForValue().multiGet(keys);
         Map<String, LoginTicket> ticketMap = new HashMap<>();
-        if (loginTickets != null && !loginTickets.isEmpty()) {
-            logger.debug("账号已在别处登录");
+        if (loginTickets != null) {
             for (LoginTicket ticket : loginTickets) {
-                logout(ticket.getTicket());
-                String redisKey = RedisKeyUtil.getTicketKey(ticket.getTicket());
-                ticketMap.put(redisKey, ticket);
+                if (ticket.getUserId() == user.getId()) {
+                    logout(ticket.getTicket());
+                    String redisKey = RedisKeyUtil.getTicketKey(ticket.getTicket());
+                    ticketMap.put(redisKey, ticket);
+                }
             }
         }
         redisTemplate.opsForValue().multiSet(map);
@@ -202,7 +203,7 @@ public class UserService implements CommunityConstant {
 
     public int updateHeader(int userId, String headerUrl) {
         //return userMapper.updateHeader(userId, headerUrl);
-        int rows=userMapper.updateHeader(userId, headerUrl);
+        int rows = userMapper.updateHeader(userId, headerUrl);
         clearCache(userId);
         return rows;
     }
@@ -223,7 +224,7 @@ public class UserService implements CommunityConstant {
         return (User) redisTemplate.opsForValue().get(redisKey);
     }
 
-    //2.娶不到时初始化缓存数据
+    //2.取不到时初始化缓存数据
     private User initCache(int userId) {
         User user = userMapper.selectById(userId);
         String redisKey = RedisKeyUtil.getUserKey(userId);
