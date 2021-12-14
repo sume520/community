@@ -1,10 +1,8 @@
 package com.sun.community.controller;
 
 
-import com.sun.community.entity.Comment;
-import com.sun.community.entity.DiscussPost;
-import com.sun.community.entity.Page;
-import com.sun.community.entity.User;
+import com.sun.community.entity.*;
+import com.sun.community.event.EventProducer;
 import com.sun.community.service.CommentService;
 import com.sun.community.service.DiscussPostService;
 import com.sun.community.service.LikeService;
@@ -42,6 +40,9 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private EventProducer eventProducer;
+
     @PostMapping("/add")
     @ResponseBody
     public String addDiscussPost(String title, String content) {
@@ -56,6 +57,14 @@ public class DiscussPostController implements CommunityConstant {
         post.setCreateTime(new Date());
         discussPostService.addDiscussPost(post);
 
+        //触发发帖事件
+        Event evetn = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(user.getId())
+                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityId(post.getId());
+        eventProducer.fireEvent(evetn);
+
         return CommunityUtil.getJSONString(0, "发布成功！");
     }
 
@@ -68,7 +77,7 @@ public class DiscussPostController implements CommunityConstant {
         model.addAttribute("user", user);
         //点赞
         long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPostId);
-        model.addAttribute("likeCount",likeCount);
+        model.addAttribute("likeCount", likeCount);
         //点赞状态 没登陆直接返回0
         int likeStatus = hostHolder.getUser() != null ? likeService.
                 findEntityLikeStatus(user.getId(), ENTITY_TYPE_POST, discussPostId) : 0;
@@ -93,7 +102,7 @@ public class DiscussPostController implements CommunityConstant {
                 commentVo.put("user", userService.findUserById(comment.getUserId()));
                 //点赞
                 likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, comment.getId());
-                commentVo.put("likeCount",likeCount);
+                commentVo.put("likeCount", likeCount);
                 //点赞状态 没登陆直接返回0
                 likeStatus = hostHolder.getUser() != null ? likeService.
                         findEntityLikeStatus(user.getId(), ENTITY_TYPE_COMMENT, comment.getId()) : 0;
@@ -111,7 +120,7 @@ public class DiscussPostController implements CommunityConstant {
                         replyVo.put("user", userService.findUserById(reply.getUserId()));
                         //点赞
                         likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, reply.getId());
-                        replyVo.put("likeCount",likeCount);
+                        replyVo.put("likeCount", likeCount);
                         //点赞状态 没登陆直接返回0
                         likeStatus = hostHolder.getUser() != null ? likeService.
                                 findEntityLikeStatus(user.getId(), ENTITY_TYPE_COMMENT, reply.getId()) : 0;

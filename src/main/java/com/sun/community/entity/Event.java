@@ -1,8 +1,11 @@
 package com.sun.community.entity;
 
+import lombok.ToString;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@ToString
 public class Event {
 
     private String topic;
