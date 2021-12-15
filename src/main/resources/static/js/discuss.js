@@ -91,7 +91,7 @@ function setDelete() {
             if (data.code == 0) {
                 //alert("删除成功！");
                 console.log("删除成功，回到首页 "+CONTEXT_PATH+"/index");
-                window.location.herf = CONTEXT_PATH + "/index";
+                window.location.href = CONTEXT_PATH + "/index";
                 return false;
             } else {
                 alert(data.msg);
