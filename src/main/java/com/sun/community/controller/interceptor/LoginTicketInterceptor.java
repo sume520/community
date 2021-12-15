@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
                         user, user.getPassword(), userService.getAuthorities(user.getId())
                 );
                 SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
+                logger.debug("登录用户信息："+user);
             }
         }
 

@@ -254,10 +254,13 @@ public class UserService implements CommunityConstant{
         list.add((GrantedAuthority) () -> {
             switch (user.getType()) {
                 case 1:
+                    logger.debug("获得管理员权限");
                     return AUTHORITY_ADMIN;
                 case 2:
+                    logger.debug("获得版主权限");
                     return AUTHORITY_MODERATOR;
                 default:
+                    logger.debug("获得用户权限");
                     return AUTHORITY_USER;
             }
         });
