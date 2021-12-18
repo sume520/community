@@ -21,4 +21,5 @@ public class DiscussPostMapperTest {
     @Test
     public void selectDiscussPostRows() {
     }
+
 }

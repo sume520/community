@@ -9,7 +9,7 @@ import java.util.List;
 public interface DiscussPostMapper {
 
     // offset 每页起始行 limit 每页帖子数量
-    List<DiscussPost> selectDiscussPosts(int userId,int offset,int limit);
+    List<DiscussPost> selectDiscussPosts(int userId,int offset,int limit,int orderMode);
 
     int selectDiscussPostRows(int userId);
 
@@ -22,4 +22,6 @@ public interface DiscussPostMapper {
     int updateType(int id,int type);
 
     int updateStatus(int id,int status);
+
+    int updateScore(int id, double score);
 }

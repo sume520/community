@@ -8,7 +8,9 @@ import com.sun.community.service.CommentService;
 import com.sun.community.service.DiscussPostService;
 import com.sun.community.util.CommunityConstant;
 import com.sun.community.util.HostHolder;
+import com.sun.community.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,8 +34,11 @@ public class CommentController implements CommunityConstant {
     @Autowired
     private EventProducer eventProducer;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @PostMapping("/add/{discussPost}")
-    public String addComment(@PathVariable("discussPost") int discussId, Comment comment) {
+    public String addComment(@PathVariable("discussPost") int postId, Comment comment) {
         comment.setUserId(hostHolder.getUser().getId());
         comment.setStatus(0);
         comment.setCreateTime(new Date());
@@ -46,7 +51,7 @@ public class CommentController implements CommunityConstant {
                 .setEntityId(comment.getEntityId())
                 .setEntityType(comment.getEntityType())
                 .setEntityUserId(comment.getTargetId())
-                .setData("postId", discussId); //记录评论所在的帖子
+                .setData("postId", postId); //记录评论所在的帖子
 
         if (comment.getEntityType() == ENTITY_TYPE_POST) {
             DiscussPost target = discussPostService.findDiscussPostById(comment.getEntityId());
@@ -63,10 +68,14 @@ public class CommentController implements CommunityConstant {
                     .setTopic(TOPIC_PUBLISH)
                     .setUserId(comment.getUserId())
                     .setEntityType(ENTITY_TYPE_POST)
-                    .setEntityId(discussId);
+                    .setEntityId(postId);
             eventProducer.fireEvent(evetn);
         }
 
-        return "redirect:/discuss/detail/" + discussId;
+        //计算帖子分数
+        String redisKey= RedisKeyUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey,postId);
+
+        return "redirect:/discuss/detail/" + postId;
     }
 }

@@ -1,6 +1,7 @@
 package com.sun.community.config;
 
 import com.sun.community.quartz.AlphaJob;
+import com.sun.community.quartz.PostScoreRefreshJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.springframework.context.annotation.Bean;
@@ -43,5 +44,31 @@ public class QuartzConfig {
 
         return factoryBean;
     }*/
+
+    //刷新帖子分数任务
+    @Bean
+    public JobDetailFactoryBean postScoreRefreshJobDetail() {
+        JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
+        factoryBean.setJobClass(PostScoreRefreshJob.class);
+        factoryBean.setName("postScoreRefreshJob");
+        factoryBean.setGroup("communityJobGroup");
+        factoryBean.setDurability(true);
+        factoryBean.setRequestsRecovery(true);
+        return factoryBean;
+    }
+
+    //配置Trigger(SimpleTriggerFactoryBean, CronTriggerFactoryBean)
+    //将与参数同名的JobDetailFactoryBean实例化的Bean注入到JobDetail中
+    @Bean
+    public SimpleTriggerFactoryBean alphaTrigger(JobDetail postScoreRefreshJobDetail) {
+        SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
+        factoryBean.setJobDetail(postScoreRefreshJobDetail);
+        factoryBean.setName("postScoreRefreshTrigger");
+        factoryBean.setGroup("communityTriggerGroup");
+        factoryBean.setRepeatInterval(1000 * 60 * 5);
+        factoryBean.setJobDataMap(new JobDataMap());//存储Job状态
+
+        return factoryBean;
+    }
 
 }
